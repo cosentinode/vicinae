@@ -1,5 +1,5 @@
 LauncherWindow {
-    readonly property real placementFraction: 1 / 3
+    readonly property real placementFraction: 1 / 2
 
     nativeChrome: true
     color: "transparent"
