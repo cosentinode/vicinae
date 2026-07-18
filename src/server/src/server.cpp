@@ -50,7 +50,6 @@
 #include "services/script-command/script-command-service.hpp"
 #include "services/shortcut/shortcut-service.hpp"
 #include "services/news/news-service.hpp"
-#include "services/telemetry/telemetry-service.hpp"
 #include "services/update/update-service.hpp"
 #ifdef Q_OS_MACOS
 #include "services/update/macos-update-installer.hpp"
@@ -325,8 +324,7 @@ int startServer(const ServerLaunchOptions &launchOpts) {
     registry->setShortcutInhibitManager(std::make_unique<ShortcutInhibitManager>());
     ShortcutInhibitor::setManager(registry->shortcutInhibitManager());
     registry->setFileChooserService(std::make_unique<FileChooserService>());
-    registry->setNewsService(std::make_unique<NewsService>(*registry->config()));
-    registry->setTelemetry(std::make_unique<TelemetryService>(*registry->config()));
+    registry->setNewsService(std::make_unique<NewsService>());
 #ifdef Q_OS_MACOS
     auto updateInstaller = std::unique_ptr<AbstractUpdateInstaller>(std::make_unique<MacosUpdateInstaller>());
 #else
@@ -483,8 +481,6 @@ int startServer(const ServerLaunchOptions &launchOpts) {
       QIcon::setThemeName(iconThemeDb.guessBestTheme());
     }
 #endif
-
-    ServiceRegistry::instance()->telemetry()->setEnabled(next.telemetry.systemInfo);
   };
 
   auto cfgService = ServiceRegistry::instance()->config();

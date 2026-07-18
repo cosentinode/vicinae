@@ -449,9 +449,6 @@ set(SRCS
 	src/services/news/news-service.hpp
 	src/services/news/news-service.cpp
 
-	src/services/telemetry/telemetry-service.hpp
-	src/services/telemetry/telemetry-service.cpp
-
 	src/services/update/semver.hpp
 	src/services/update/github-release.hpp
 	src/services/update/abstract-update-installer.hpp

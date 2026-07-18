@@ -10,10 +10,6 @@
 
 class ActionPanelState;
 
-namespace config {
-class Manager;
-}
-
 struct NewsItem {
   std::string id;
   QString title;
@@ -40,7 +36,7 @@ signals:
   void itemsChanged();
 
 public:
-  explicit NewsService(config::Manager &config);
+  NewsService();
 
   void dismiss(const std::string &id);
   bool isDismissed(const std::string &id) const;
@@ -52,7 +48,6 @@ private:
   void saveState() const;
   static std::vector<NewsItem> allItems();
 
-  config::Manager &m_config;
   std::filesystem::path m_stateFile;
   std::vector<NewsItem> m_items;
   std::vector<std::string> m_dismissed;

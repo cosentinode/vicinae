@@ -1,10 +1,6 @@
 #include "news-service.hpp"
-#include "actions/app/app-actions.hpp"
 #include "builtin_icon.hpp"
-#include "config/config.hpp"
-#include "navigation-controller.hpp"
 #include "service-registry.hpp"
-#include "theme/colors.hpp"
 #include "vicinae.hpp"
 #include <algorithm>
 #include <fstream>
@@ -16,26 +12,12 @@ struct NewsState {
   std::vector<std::string> dismissed;
 };
 
-namespace {
-class AutoDismissProxy : public ProxyAction {
-public:
-  AutoDismissProxy(AbstractAction *action, std::string newsId)
-      : ProxyAction(action), m_newsId(std::move(newsId)) {}
-
-  void executeAfter(ApplicationContext *ctx) override { ctx->services->newsService()->dismiss(m_newsId); }
-
-private:
-  std::string m_newsId;
-};
-} // namespace
-
 DismissNewsAction::DismissNewsAction(std::string newsId)
     : AbstractAction(QStringLiteral("Dismiss"), BuiltinIcon::Xmark), m_newsId(std::move(newsId)) {}
 
 void DismissNewsAction::execute(ApplicationContext *ctx) { ctx->services->newsService()->dismiss(m_newsId); }
 
-NewsService::NewsService(config::Manager &config)
-    : m_config(config), m_stateFile(Omnicast::stateDir() / "news.json") {
+NewsService::NewsService() : m_stateFile(Omnicast::stateDir() / "news.json") {
   m_items = allItems();
   loadState();
 }
@@ -54,11 +36,10 @@ bool NewsService::isDismissed(const std::string &id) const {
 bool NewsService::hasUnreadNews() const { return !activeItems().empty(); }
 
 std::vector<const NewsItem *> NewsService::activeItems() const {
-  const auto &cfg = m_config.value();
   std::vector<const NewsItem *> result;
+  result.reserve(m_items.size());
   for (const auto &item : m_items) {
     if (isDismissed(item.id)) continue;
-    if (item.id == "telemetry-notice-v1" && !cfg.telemetry.systemInfo) continue;
     result.emplace_back(&item);
   }
   return result;
@@ -92,27 +73,4 @@ void NewsService::saveState() const {
   file << buf;
 }
 
-std::vector<NewsItem> NewsService::allItems() {
-  std::vector<NewsItem> items;
-
-  items.push_back({
-      .id = "telemetry-notice-v1",
-      .title = QStringLiteral("Telemetry"),
-      .subtitle = QStringLiteral("We now collect basic usage statistics on startup"),
-      .icon = ImageURL{BuiltinIcon::Megaphone}.setBackgroundTint(SemanticColor::Yellow),
-      .actionFactory =
-          [](ApplicationContext *) {
-            auto panel = std::make_unique<ListActionPanelState>();
-            auto *section = panel->createSection();
-
-            auto *openDocs = new OpenInBrowserAction(QUrl(Omnicast::DOC_TELEMETRY_URL), "Learn more");
-            auto *proxy = new AutoDismissProxy(openDocs, "telemetry-notice-v1");
-            proxy->setPrimary(true);
-            section->addAction(proxy);
-
-            return panel;
-          },
-  });
-
-  return items;
-}
+std::vector<NewsItem> NewsService::allItems() { return {}; }

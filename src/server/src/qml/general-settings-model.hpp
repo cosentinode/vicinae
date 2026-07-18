@@ -19,8 +19,6 @@ class GeneralSettingsModel : public QObject {
   Q_PROPERTY(bool wrapNavigation READ wrapNavigation WRITE setWrapNavigation NOTIFY configChanged)
   Q_PROPERTY(
       bool encryptSensitiveData READ encryptSensitiveData WRITE setEncryptSensitiveData NOTIFY configChanged)
-  Q_PROPERTY(
-      bool telemetrySystemInfo READ telemetrySystemInfo WRITE setTelemetrySystemInfo NOTIFY configChanged)
   Q_PROPERTY(bool layerShellEnabled READ layerShellEnabled WRITE setLayerShellEnabled NOTIFY configChanged)
   Q_PROPERTY(bool clientSideDecorations READ clientSideDecorations WRITE setClientSideDecorations NOTIFY
                  configChanged)
@@ -70,8 +68,6 @@ public:
   void setWrapNavigation(bool v);
   bool encryptSensitiveData() const;
   void setEncryptSensitiveData(bool v);
-  bool telemetrySystemInfo() const;
-  void setTelemetrySystemInfo(bool v);
   bool layerShellEnabled() const;
   void setLayerShellEnabled(bool v);
   bool clientSideDecorations() const;

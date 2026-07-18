@@ -63,11 +63,6 @@ void GeneralSettingsModel::setEncryptSensitiveData(bool v) {
   cfgManager().mergeWithUser({.encryptSensitiveData = v});
 }
 
-bool GeneralSettingsModel::telemetrySystemInfo() const { return cfg().telemetry.systemInfo; }
-void GeneralSettingsModel::setTelemetrySystemInfo(bool v) {
-  cfgManager().mergeWithUser({.telemetry = config::Partial<config::TelemetryConfig>{.systemInfo = v}});
-}
-
 bool GeneralSettingsModel::layerShellEnabled() const { return cfg().launcherWindow.layerShell.enabled; }
 void GeneralSettingsModel::setLayerShellEnabled(bool v) {
   cfgManager().mergeWithUser({.launcherWindow = config::Partial<config::WindowConfig>{

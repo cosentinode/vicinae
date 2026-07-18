@@ -237,14 +237,6 @@ template <> struct Partial<Footer> {
   std::optional<int> height;
 };
 
-struct TelemetryConfig {
-  bool systemInfo = true;
-};
-
-template <> struct Partial<TelemetryConfig> {
-  std::optional<bool> systemInfo;
-};
-
 using KeybindMap = std::map<std::string, std::string>;
 
 using ProviderMap = std::map<std::string, ProviderData>;
@@ -296,7 +288,6 @@ struct ConfigValue {
 
   FontConfig font;
   ThemeConfig theme;
-  TelemetryConfig telemetry;
 
   WindowConfig launcherWindow;
   Header header;
@@ -350,7 +341,6 @@ template <> struct Partial<ConfigValue> {
 
   std::optional<Partial<FontConfig>> font;
   std::optional<Partial<ThemeConfig>> theme;
-  std::optional<Partial<TelemetryConfig>> telemetry;
 
   std::optional<Partial<WindowConfig>> launcherWindow;
   std::optional<Partial<Header>> header;
@@ -441,7 +431,6 @@ SNAKE_CASIFY(config::LayerShellConfig);
 SNAKE_CASIFY(config::WindowConfig);
 SNAKE_CASIFY(config::SystemThemeConfig);
 SNAKE_CASIFY(config::ThemeConfig);
-SNAKE_CASIFY(config::TelemetryConfig);
 SNAKE_CASIFY(config::WindowCSD);
 SNAKE_CASIFY(config::GlobalShortcuts);
 

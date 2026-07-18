@@ -75,24 +75,6 @@ Flickable {
             }
         }
 
-        SettingsSectionLabel {
-            text: "Privacy"
-            Layout.topMargin: 24
-            Layout.bottomMargin: 10
-        }
-
-        SettingsGroup {
-            SettingsRow {
-                label: "Basic usage statistics"
-                description: "Send basic system and vicinae installation information on startup to help improve Vicinae."
-                showSeparator: false
-                SettingsToggle {
-                    checked: root.model.telemetrySystemInfo
-                    onToggled: root.model.telemetrySystemInfo = checked
-                }
-            }
-        }
-
         Item {
             Layout.preferredHeight: 24
         }

@@ -23,7 +23,6 @@
 #include "services/raycast/raycast-store.hpp"
 #include "services/extension-store/vicinae-store.hpp"
 #include "services/root-item-manager/root-item-manager.hpp"
-#include "services/telemetry/telemetry-service.hpp"
 #include "services/update/update-service.hpp"
 #include "services/toast/toast-service.hpp"
 #include "services/window-manager/window-manager.hpp"
@@ -83,8 +82,6 @@ WindowMaterialManager *ServiceRegistry::windowMaterialManager() const {
 ShortcutInhibitManager *ServiceRegistry::shortcutInhibitManager() const {
   return m_shortcutInhibitManager.get();
 }
-
-TelemetryService *ServiceRegistry::telemetry() const { return m_telemetry.get(); }
 
 UpdateService *ServiceRegistry::updateService() const { return m_updateService.get(); }
 
@@ -190,10 +187,6 @@ void ServiceRegistry::setWindowMaterialManager(std::unique_ptr<WindowMaterialMan
 
 void ServiceRegistry::setShortcutInhibitManager(std::unique_ptr<ShortcutInhibitManager> service) {
   m_shortcutInhibitManager = std::move(service);
-}
-
-void ServiceRegistry::setTelemetry(std::unique_ptr<TelemetryService> telemetry) {
-  m_telemetry = std::move(telemetry);
 }
 
 void ServiceRegistry::setUpdateService(std::unique_ptr<UpdateService> service) {
