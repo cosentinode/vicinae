@@ -53,7 +53,8 @@ Item {
     signal endReached
     property bool canLoadMore: false
     property real endReachedThreshold: root.height * 1.5
-    property bool _endArmed: true
+	property bool _endArmed: true
+	property real _historyOffset: -1
 
     onCanLoadMoreChanged: {
         if (canLoadMore) {
@@ -95,26 +96,42 @@ Item {
         return Math.abs(listView.contentY - previousContentY) > 0.5;
     }
 
-    function moveDown() {
-        const next = root.listModel.nextSelectableIndex(listView.currentIndex, 1);
+	function moveDown() {
+		_historyOffset = -1;
+
+		const next = root.listModel.nextSelectableIndex(listView.currentIndex, 1);
+
         if (next !== listView.currentIndex) {
             listView.currentIndex = next;
             const scrollTarget = sectionScrollTarget(next, -1);
             listView.positionViewAtIndex(scrollTarget, ListView.Contain);
-        }
+		}
+
         return true;
     }
 
-    function moveUp() {
-        if (revealCurrentSectionHeaderIfHidden())
-            return true;
+	function moveUp() {
+		// FIXME: handling history (a root search exclusive concept) in the GenericListView is obviously
+		// not great and we will need to think about something better in the future where we leave view hosts
+		// more low level autonomy over navigation
+		// same thing can be said of tryAliasFastTrack, although the logic for this is in the search bar
+		if (listView.currentIndex == 1 && typeof root.listModel.getSearchHistory === 'function') {
+			if (root.listModel.getSearchHistory(_historyOffset + 1)) {
+				_historyOffset += 1;
+			}
+		}
 
-        const next = root.listModel.nextSelectableIndex(listView.currentIndex, -1);
+        if (revealCurrentSectionHeaderIfHidden())
+		return true;
+
+		const next = root.listModel.nextSelectableIndex(listView.currentIndex, -1);
+
         if (next !== listView.currentIndex) {
             listView.currentIndex = next;
             const scrollTarget = sectionScrollTarget(next, -1);
             listView.positionViewAtIndex(scrollTarget, ListView.Contain);
-        }
+		}
+
         return true;
     }
 
@@ -161,7 +178,9 @@ Item {
     Connections {
         enabled: root.autoWireModel && root.listModel
         target: root.listModel
-        function onModelReset() {
+		function onModelReset() {
+			_historyOffset = -1;
+
             if (root.selectFirstOnReset || listView.currentIndex < 0 || listView.currentIndex >= listView.count) {
                 root.selectFirst();
             }

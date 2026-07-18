@@ -8,14 +8,37 @@
 
 namespace fs = std::filesystem;
 
+namespace {
+constexpr auto MAX_HISTORY_SIZE = 1000;
+};
+
 VisitTracker::VisitTracker(const fs::path &path) : m_path(path) { loadFromDisk(); }
 
-void VisitTracker::registerVisit(const EntrypointId &id) {
+void VisitTracker::registerVisit(const EntrypointId &id, std::string_view q) {
+  auto ts = QDateTime::currentSecsSinceEpoch();
+  auto &front = m_data.history.front();
+  const bool isImmediateDupe = std::string{id} == front.id && q == front.q;
+
+  if (!isImmediateDupe) {
+    m_data.history.emplace_front(HistoryEntry{.id = id, .q = std::string{q}, .ts = ts});
+
+    if (m_data.history.size() > MAX_HISTORY_SIZE) {
+      for (int i = m_data.history.size() - MAX_HISTORY_SIZE; i > 0; --i) {
+        m_data.history.pop_back();
+      }
+    }
+  }
+
   VisitInfo &data = m_data.visited[id];
-  data.lastVisitedAt = QDateTime::currentSecsSinceEpoch();
+
+  data.lastVisitedAt = ts;
   ++data.visitCount;
-  // todo: we might want to flush ever X seconds instead of saving directly
   saveToDisk();
+}
+
+std::optional<VisitTracker::HistoryEntry> VisitTracker::history(int offset) const {
+  if (offset >= static_cast<int>(m_data.history.size())) return std::nullopt;
+  return m_data.history[offset];
 }
 
 VisitTracker::VisitInfo VisitTracker::getVisit(const EntrypointId &id) const {

@@ -515,11 +515,15 @@ bool RootItemManager::resetRanking(const EntrypointId &id) {
   return true;
 }
 
-bool RootItemManager::registerVisit(const EntrypointId &id) {
+bool RootItemManager::registerVisit(const EntrypointId &id, std::string_view q) {
   ++m_metadata[id].visitCount;
   m_metadata[id].lastVisitedAt = QDateTime::currentSecsSinceEpoch();
-  m_visitTracker.registerVisit(id);
+  m_visitTracker.registerVisit(id, q);
   return true;
+}
+
+std::optional<VisitTracker::HistoryEntry> RootItemManager::getSearchHistoryEntry(int offset) {
+  return m_visitTracker.history(offset);
 }
 
 bool RootItemManager::setProviderEnabled(const QString &providerId, bool value) {

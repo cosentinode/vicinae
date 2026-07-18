@@ -289,7 +289,8 @@ public:
   bool enableFallback(const EntrypointId &id);
   std::vector<std::shared_ptr<RootItem>> queryFavorites(std::optional<int> limit = {});
   bool resetRanking(const EntrypointId &id);
-  bool registerVisit(const EntrypointId &id);
+  bool registerVisit(const EntrypointId &id, std::string_view q);
+  std::optional<VisitTracker::HistoryEntry> getSearchHistoryEntry(int offset = 0);
   bool setItemAsFavorite(const EntrypointId &item, bool value = true);
   bool setProviderEnabled(const QString &providerId, bool value);
   bool disableItem(const EntrypointId &id);

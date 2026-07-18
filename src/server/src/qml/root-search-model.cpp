@@ -225,6 +225,21 @@ bool RootSearchModel::tryAliasFastTrack() {
   return true;
 }
 
+bool RootSearchModel::getSearchHistory(int offset) {
+  auto &nav = scope().appContext()->navigation;
+  auto manager = scope().appContext()->services->rootItemManager();
+
+  // we only allow searching history on empty input
+  if (!nav->searchText().isEmpty()) return false;
+
+  if (auto ent = manager->getSearchHistoryEntry(offset)) {
+    scope().appContext()->navigation->setSearchText(QString::fromStdString(ent->q));
+    return true;
+  }
+
+  return false;
+}
+
 void RootSearchModel::startCalculator() {
   if (m_calcWatcher.isRunning()) {
     m_calculator->backend()->abort();

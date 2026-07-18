@@ -28,6 +28,7 @@ public:
   Q_INVOKABLE void setFilter(const QString &text);
   void setSelectedIndex(int index) override;
   Q_INVOKABLE bool tryAliasFastTrack();
+  Q_INVOKABLE bool getSearchHistory(int offset);
 
 private:
   void refresh();
